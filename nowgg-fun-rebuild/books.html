@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nowgg.fun | books</title>
+  <link rel="icon" href="/img/logo.png" />
+  <link href="/css/home.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap" rel="stylesheet" />
+  <meta name="theme-color" content="#00ffa6" />
+</head>
+<body>
+  <div id="header">
+    <img class="headericons" style="scale: 1.5; width: 120px; margin-left: 15px;" src="/img/landscape.png" onclick="window.location.href='index.html'" alt="logo" />
+    <div class="right">
+      <img class="headericons" src="/icons/calc.svg" onclick="window.location.href='math.html'" alt="math" />
+      <img class="headericons" src="/icons/border-all-solid.svg" onclick="window.location.href='books.html'" alt="books" />
+    </div>
+  </div>
+  <div id="content" style="padding-top:120px;">
+    <h1>books</h1>
+    <p>not implemented on original either (stub).</p>
+    <br />
+    <a href="index.html"><button type="button">go back</button></a>
+  </div>
+  <div id="vanta"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+  <script>
+    VANTA.FOG({ el: "#vanta", mouseControls: true, touchControls: true, gyroControls: false, minHeight: 200, minWidth: 200, highlightColor: 0xff00b4, midtoneColor: 0xe1ff, lowlightColor: 0xc2ff00, baseColor: 0x2f2f2f, blurFactor: 0.90, speed: 5.00, zoom: 0.40 });
+  </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>nowgg.fun by frogie's arcade</title>
+  <link rel="icon" href="/img/logo.png">
+  <link href="/css/home.css" rel="stylesheet" type="text/css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#00ffa6">
+  <meta name="msapplication-TileColor" content="#00ffa6">
+  <meta property="og:title" content="nowgg.fun">
+  <meta property="og:image" content="/img/logo.png">
+  <meta name="description" content="the ONLY nowgg bypass that gets regular fixes and updates - discord.gg/unblockedgames">
+  <meta property="og:description" content="the ONLY nowgg bypass that gets regular fixes and updates - discord.gg/unblockedgames">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="rizzpopup">
+    <div id="roddyrichesbox"><p>getting things ready...</p></div>
+  </div>
+  <div class="rizzpopup">
+    <div id="roddyrichesbox" style="top: 55%;">
+      <p>nowgg.fun won't work for you!</p>
+      <p>you or your organization has disabled WebRTC, the way we set things up and how now.gg works. please go enable WebRTC and then come back.</p>
+    </div>
+  </div>
+
+  <div id="header">
+    <img class="headericons" style="scale: 1.5; width: 120px; margin-left: 15px;" src="/img/landscape.png" onclick="window.location.href='/'">
+    <div class="right">
+      <img class="headericons" src="/icons/calc.svg" onclick="window.location.href='/math.html'">
+      <img class="headericons" src="/icons/border-all-solid.svg" onclick="window.location.href='/books.html'">
+    </div>
+  </div>
+
+  <div id="content">
+    <br><br><br><br>
+    <h1>nowgg.fun: a now.gg bypass by <a href="https://frogiesarcade.net" target="_blank">frogie's arcade</a>.</h1>
+    <h2>support and update information can be found <a href="https://discord.gg/unblockedgames" target="_blank">here</a></h2>
+    <h3>pre-picked apps:</h3>
+    <br><br><br>
+    <div class="grid">
+      <a href="/apps/a/19900/b.html"><img src="/img/roadblock.png" alt="Roblox"></a>
+      <a href="/apps/a/10011/b.html"><img src="/img/stumbleguys.jpg" alt="Stumble Guys"></a>
+      <a href="/apps/aptoide/5874/aptoide.html?deep_link=aptoidesearch://com.epicgames.fortnite"><img src="/img/fortnite.png" alt="Fortnite"></a>
+      <a href="/apps/a/10008/b.html"><img src="/img/cod.jpg" alt="COD"></a>
+      <a href="/apps/playducky/7199/melon-sandbox.html"><img src="/img/melon-sandbox.png" alt="Melon Sandbox"></a>
+      <a href="/apps/aptoide/5874/aptoide.html"><img src="/img/aptoide.png" alt="Aptoide"></a>
+      <a href="/apps/uncube/7074/now.html"><img src="/img/android.jpg" alt="Android"></a>
+      <a href="/apps/a/10019/b.html"><img src="/img/cookierun.jpg" alt="Cookie Run"></a>
+      <a href="/apps/robtop-games/1400/geometry-dash.html"><img src="/img/geodash.png" alt="Geometry Dash"></a>
+      <a href="/apps/psyonix-studios/4656/rocket-league.html"><img src="/img/rocketleague.webp" alt="Rocket League"></a>
+      <a href="/apps/aptoide/5874/aptoide.html?deep_link=aptoidesearch://com.mojang.minecrafttrialpe"><img src="/img/minecraft.png" alt="Minecraft"></a>
+    </div>
+    <br><br>
+    <footer><br>service by <a href="https://frogiee.one" target="_blank">frogiee1</a>.</footer>
+    <br><br><br>
+  </div>
+
+  <div id="whereamifrom"><p>discord.gg/unblockedgames</p></div>
+  <div id="buildinfo"><p>frogiesarcade.net</p></div>
+  <div id="vanta"></div>
+
+  <script>
+    function openscreen(num) {
+      var el = document.getElementsByClassName('rizzpopup')[num];
+      if (!el) return;
+      el.style.opacity = "1";
+      el.style.visibility = "visible";
+    }
+    function closescreen(num) {
+      var el = document.getElementsByClassName('rizzpopup')[num];
+      if (!el) return;
+      el.style.opacity = "0";
+      el.style.visibility = "hidden";
+    }
+    function getQueryParam(param) {
+      return new URLSearchParams(window.location.search).get(param);
+    }
+    async function getFirstOctet() {
+      let result = null;
+      try {
+        const pc = new RTCPeerConnection({
+          iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+        });
+        pc.createDataChannel("dc");
+        pc.onicecandidate = event => {
+          if (!event.candidate) return;
+          const cand = event.candidate.candidate;
+          if (cand.includes("typ srflx") || cand.includes("typ relay")) {
+            const parts = cand.split(" ");
+            const ip = parts[4];
+            if (ip && !ip.includes(":")) result = ip.split(".")[0];
+          }
+        };
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        await new Promise(res => setTimeout(res, 1500));
+        pc.close();
+      } catch (e) {}
+      return result;
+    }
+    if (getQueryParam("prefix")) {
+      sessionStorage.setItem("prefix", getQueryParam("prefix"));
+    } else if (sessionStorage.getItem("prefix")) {
+      console.log("we good");
+    } else {
+      openscreen(0);
+      getFirstOctet().then(firstOctet => {
+        if (firstOctet) {
+          sessionStorage.setItem("prefix", firstOctet);
+          closescreen(0);
+        } else {
+          sessionStorage.setItem("prefix", "1");
+          closescreen(0);
+        }
+      });
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+  <script>
+    VANTA.FOG({
+      el: "#vanta",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      highlightColor: 0xff00b4,
+      midtoneColor: 0xe1ff,
+      lowlightColor: 0xc2ff00,
+      baseColor: 0x2f2f2f,
+      blurFactor: 0.90,
+      speed: 5.00,
+      zoom: 0.40
+    });
+  </script>
+</body>
+</html>
