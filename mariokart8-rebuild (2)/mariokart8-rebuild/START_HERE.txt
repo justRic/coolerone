@@ -1,0 +1,15 @@
+YOU MUST START THE SERVER WITH NODE (not python):
+
+  node serve.mjs
+
+Then open:
+
+  http://127.0.0.1:8080/?sw=0&clear=1
+
+Tab title should say: MK8 Web (local+romfs proxy)
+
+If title is only "MK8 Web" you are on an OLD copy or an old tab.
+Ctrl+Shift+R after starting node serve.mjs
+
+If you still see "no game files served at https://mariokart8.online/romfs/"
+you are NOT running the updated main.js / not using node serve.mjs.
