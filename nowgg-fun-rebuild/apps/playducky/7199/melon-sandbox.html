@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>nowgg.fun | launch</title>
+  <link rel="icon" href="/img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="/css/home.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#00ffa6">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="the ONLY nowgg bypass that gets regular fixes and updates - discord.gg/unblockedgames">
+  <style>
+    #roddyricchboxselect {
+      position: absolute;
+      z-index: 9997;
+      text-align: center;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      border-radius: 35px;
+      color: white;
+      padding: 30px;
+      line-height: 1.8;
+      display: none;
+    }
+    #loadbar-wrap {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      z-index: 10001; width: min(440px, 92vw);
+      background: #14141c; border-radius: 14px; padding: 14px 16px 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.45);
+      display: none; align-items: center; gap: 12px;
+      font-family: Parkinsans, sans-serif; color: #fff;
+    }
+    #loadbar-wrap.visible { display: flex; }
+    #loadbar-wrap img { width: 42px; height: 42px; border-radius: 10px; border: none; object-fit: cover; }
+    #loadbar-text { flex: 1; text-align: left; font-size: 13px; line-height: 1.35; }
+    #loadbar-text a { color: #9ad4ff; font-size: 12px; }
+    #loadbar-track {
+      position: absolute; left: 16px; right: 16px; bottom: 8px; height: 3px;
+      background: #2a2a35; border-radius: 2px; overflow: hidden;
+    }
+    #loadbar-fill {
+      height: 100%; width: 10%; background: #00ffa6;
+      transition: width .35s ease; border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="rizzpopup">
+    <div id="roddyrichesbox"><p>getting things ready...</p></div>
+  </div>
+  <div class="rizzpopup">
+    <div id="roddyrichesbox" style="top:55%;">
+      <p>nowgg.fun won't work for you!</p>
+      <p>you or your organization has disabled WebRTC, the way we set things up and how now.gg works. please go enable WebRTC and then come back.</p>
+    </div>
+  </div>
+
+  <div id="fadeout">
+    <div id="roddyricchboxselect">
+      <br><br><br>
+      <h1>nowgg.fun launcher</h1>
+      <h4>select your prefered screen resolution and frame rate limit below.</h4>
+      <h5>the lower your settings are the less laggy it will be. more fps will result in a smoother image, but your image will be more choppy than normal.</h5>
+      <p>note: you can no longer change these until now.gg brings back the setting to do so.</p>
+      <select id="screensize" style="width: 300px;">
+        <option value="select" disabled>select a screen resolution</option>
+        <option value="480" disabled>480p</option>
+        <option value="720" selected>720p</option>
+        <option value="1080" disabled>1080p</option>
+      </select>
+      <select id="framerate" style="width: 300px;">
+        <option value="select" disabled>select a frame rate</option>
+        <option value="30" selected>30 fps</option>
+        <option value="45" disabled>45 fps</option>
+        <option value="50" disabled>50 fps</option>
+        <option value="60" disabled>60 fps</option>
+      </select>
+      <br><br>
+      <button type="button" onclick="launch()">launch</button>
+    </div>
+  </div>
+
+  <div id="vanta"></div>
+
+  <div id="loadbar-wrap">
+    <img src="/img/logo.png" alt="">
+    <div id="loadbar-text">
+      loading, be patient.<br>
+      <a href="https://discord.gg/unblockedgames" target="_blank">https://discord.gg/unblockedgames</a> |
+      <a href="https://frogiesarcade.net" target="_blank">https://frogiesarcade.net</a>
+    </div>
+    <div id="loadbar-track"><div id="loadbar-fill"></div></div>
+  </div>
+
+  <script>
+    // Canonical path on nowgg.fun (exact original)
+    const LIVE_PATH = "/apps/playducky/7199/melon-sandbox.exampleurl";
+
+    function openscreen(num) {
+      document.getElementsByClassName('rizzpopup')[num].style.opacity = "1";
+      document.getElementsByClassName('rizzpopup')[num].style.visibility = "visible";
+    }
+    function closescreen(num) {
+      document.getElementsByClassName('rizzpopup')[num].style.opacity = "0";
+      document.getElementsByClassName('rizzpopup')[num].style.visibility = "hidden";
+    }
+    function getQueryParam(param) {
+      return new URLSearchParams(window.location.search).get(param);
+    }
+    async function getFirstOctet() {
+      let result = null;
+      try {
+        const pc = new RTCPeerConnection({
+          iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+        });
+        pc.createDataChannel("dc");
+        pc.onicecandidate = event => {
+          if (!event.candidate) return;
+          const cand = event.candidate.candidate;
+          if (cand.includes("typ srflx") || cand.includes("typ relay")) {
+            const parts = cand.split(" ");
+            const ip = parts[4];
+            if (ip && !ip.includes(":")) result = ip.split(".")[0];
+          }
+        };
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        await new Promise(res => setTimeout(res, 1500));
+        pc.close();
+      } catch (e) {}
+      return result;
+    }
+
+    function showLoadBar() {
+      const bar = document.getElementById('loadbar-wrap');
+      const fill = document.getElementById('loadbar-fill');
+      bar.classList.add('visible');
+      let p = 10;
+      const t = setInterval(() => {
+        p = Math.min(90, p + Math.random() * 12 + 4);
+        fill.style.width = p + '%';
+      }, 300);
+      return t;
+    }
+
+    function launch() {
+      document.getElementById('fadeout').style.opacity = "0";
+      document.getElementById('vanta').style.opacity = "0";
+      showLoadBar();
+
+      setTimeout(function () {
+        let screensizeselect = document.getElementById("screensize").value || "720";
+        let framerateselect = document.getElementById("framerate").value || "30";
+        if (screensizeselect === "select") screensizeselect = "720";
+        if (framerateselect === "select") framerateselect = "30";
+
+        localStorage.setItem("imsureendis", "hi");
+        localStorage.setItem("nggfunscreensize", screensizeselect);
+        localStorage.setItem("nggfunframerate", framerateselect);
+
+        let aptoidestuff = "";
+        if (getQueryParam("deep_link")) {
+          aptoidestuff = "deep_link=" + encodeURIComponent(getQueryParam("deep_link"));
+        }
+
+        // Original builds: https://{prefix}.ip.{host}{pathname}?params
+        // Use the domain this launcher was opened on for BYOD proxy routing.
+        const prefix = sessionStorage.getItem("prefix") || "1";
+        const hostname = window.location.hostname;
+        const host = ["localhost", "127.0.0.1", "::1", "[::1]"].includes(hostname) ||
+          hostname.endsWith(".up.railway.app")
+          ? "nowgg.fun"
+          : hostname.replace(/^\d+\.ip\./, "");
+        const path = LIVE_PATH;
+
+        let href;
+        if (screensizeselect === "480") {
+          href = "https://" + prefix + ".ip." + host + path +
+            "?maxFps=" + framerateselect +
+            "&framebufferSizeWidth=720&framebufferSizeHeight=480" +
+            (aptoidestuff ? "&" + aptoidestuff : "");
+        } else if (screensizeselect === "1080") {
+          href = "https://" + prefix + ".ip." + host + path +
+            "?maxFps=" + framerateselect +
+            "&framebufferSizeWidth=1920&framebufferSizeHeight=1080" +
+            (aptoidestuff ? "&" + aptoidestuff : "");
+        } else {
+          // 720 — original omits frame buffer params
+          href = "https://" + prefix + ".ip." + host + path +
+            (aptoidestuff ? "?" + aptoidestuff : "");
+        }
+        window.location.href = href;
+      }, 1000);
+    }
+
+    // === boot sequence (mirrors live site) ===
+    if (getQueryParam("prefix")) {
+      sessionStorage.setItem("prefix", getQueryParam("prefix"));
+    }
+
+    if (sessionStorage.getItem("prefix")) {
+      console.log("we good");
+      // live site auto-launches when prefix already set
+      launch();
+    } else {
+      openscreen(0);
+      getFirstOctet().then(firstOctet => {
+        if (firstOctet) {
+          sessionStorage.setItem("prefix", firstOctet);
+          closescreen(0);
+          launch();
+        } else {
+          closescreen(0);
+          openscreen(1);
+          // still expose manual launch with fallback
+          sessionStorage.setItem("prefix", "1");
+          document.getElementById("roddyricchboxselect").style.display = "block";
+        }
+      });
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+  <script>
+    VANTA.FOG({
+      el: "#vanta",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      highlightColor: 0xff00b4,
+      midtoneColor: 0xe1ff,
+      lowlightColor: 0xc2ff00,
+      baseColor: 0x2f2f2f,
+      blurFactor: 0.90,
+      speed: 5.00,
+      zoom: 0.40
+    });
+  </script>
+</body>
+</html>
